@@ -131,6 +131,13 @@ This is a personal project, but feel free to fork and experiment.
 
 ---
 
+## Next Steps
+ - Switching to Notion Database
+ - Re-implementing OAuth :)
+ - Metadata scraping
+ 
+---
+
 ## 📄 License
 
 MIT

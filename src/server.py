@@ -120,7 +120,7 @@ async def add_bookmark(
     tag_str = _tags_to_str(tags)
 
     lid = await db_exec(
-        "INSERT INTO bookmarks (url, title, tags) VALUES (?, ?, ?, ?)",
+        "INSERT INTO bookmarks (user_sub, url, title, tags) VALUES (?, ?, ?, ?)",
         ("global", url, norm_title, tag_str),
     )
     return {"id": lid, "saved": True, "url": url, "title": norm_title, "tags": (tags or [])}
