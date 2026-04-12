@@ -134,7 +134,7 @@ async def list_bookmarks(
     await init_db()
     rows = await db_query(
         "SELECT id, url, title, tags, created_at FROM bookmarks ORDER BY id DESC LIMIT ?",
-        (limit),
+        (limit,),
     )
     items = []
     for r in rows:
