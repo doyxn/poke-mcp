@@ -5,11 +5,8 @@ import re
 import asyncio
 import sqlite3
 from typing import Any, Optional, Annotated
-from pydantic import Field
-from dotenv import load_dotenv
 
-from fastmcp import FastMCP
-
+import time
 # ---------------------------------------------------------
 # Config & storage
 # ---------------------------------------------------------
@@ -101,6 +98,31 @@ def _normalize_title(title: Optional[str], url: str) -> str:
     except Exception:
         return url
 
+def work_break(self, timer):
+    minutes, seconds = divmod(timer, 60)
+    self.min.set(f"{minutes:02d}")
+    self.sec.set(f"{seconds:02d}")
+    self.root.update()
+    time.sleep()
+
+def work(self):
+    timer = 25*60
+    while timer >=0:
+        work_break(timer)
+        if timer == 0:
+            break
+            ## start break util
+        timer =-1
+
+def break_(self):
+    timer = 5*60
+    while timer>=0:
+        work_break(timer)
+        if timer == 0:
+            break
+            ## back to work util
+        timer =- 1
+    
 
 # ---------------------------------------------------------
 # Tools

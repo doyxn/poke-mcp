@@ -1,2 +1,3 @@
 # poke-mcp
-Vercel MCP for Poke Interaction Co.
+
+pomodoro tool for poke
