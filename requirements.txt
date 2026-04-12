@@ -1,2 +1,5 @@
 fastmcp
 python-dotenv
+
+requests
+notion-client
