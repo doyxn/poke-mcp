@@ -5,7 +5,8 @@ from urllib.parse import urlparse
 from pydantic import Field
 from fastmcp import FastMCP
 
-from core.notion import notion, init_db, BOOKMARK_DATA_SOURCE_ID, KANBAN_DATA_SOURCE_ID
+import core.notion as notion_core
+from core.notion import notion, init_db, _URL_RE
 
 
 _URL_RE = re.compile(r"^https?://", re.IGNORECASE)
@@ -45,7 +46,7 @@ def register_bookmark_tools(mcp: FastMCP):
         norm_title = _normalize_title(title, url)
 
         properties = {
-            "ID": {   # 👈 THIS is your title field
+            "ID": {   
                 "title": [
                     {"text": {"content": norm_title}}
                 ]
@@ -61,7 +62,7 @@ def register_bookmark_tools(mcp: FastMCP):
         }
 
         page = notion.pages.create(
-            parent={"data_source_id": BOOKMARK_DATA_SOURCE_ID},
+            parent={"data_source_id": notion_core.BOOKMARK_DATA_SOURCE_ID},
             properties=properties,
         )
 
@@ -74,7 +75,7 @@ def register_bookmark_tools(mcp: FastMCP):
         }
     
     # ---------------------------------------------------------
-    # Setup
+    # list_bookmarks tool
     # ---------------------------------------------------------
     @mcp.tool
     async def list_bookmarks(
@@ -84,7 +85,7 @@ def register_bookmark_tools(mcp: FastMCP):
         await init_db()
 
         response = notion.data_sources.query(
-            data_source_id=BOOKMARK_DATA_SOURCE_ID,
+            data_source_id=notion_core.BOOKMARK_DATA_SOURCE_ID,
             page_size=limit,
             sorts=[{"timestamp": "created_time", "direction": "descending"}],
         )
@@ -113,3 +114,26 @@ def register_bookmark_tools(mcp: FastMCP):
             })
 
         return {"items": items}
+
+
+
+    # ---------------------------------------------------------
+    # delete_bookmark tool 
+    # ---------------------------------------------------------
+    @mcp.tool()
+    async def delete_bookmark(
+        bookmark_id: Annotated[str, Field(description="ID of the bookmark to delete")]
+    ) -> dict[str, Any]:
+
+        await init_db()
+
+        # Notion doesn't have a hard delete, so we "archive" the page
+        notion.pages.update(
+            page_id=bookmark_id,
+            archived=True
+        )
+
+        return {
+            "id": bookmark_id,
+            "deleted": True,
+        }

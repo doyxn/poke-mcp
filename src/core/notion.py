@@ -9,6 +9,7 @@ from notion_client import Client
 from fastmcp import FastMCP
 from pydantic import Field
 from typing import Any, Optional, Annotated
+
 # ---------------------------------------------------------
 # Setup
 # ---------------------------------------------------------
